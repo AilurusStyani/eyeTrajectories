@@ -43,7 +43,7 @@ SCREEN.height = 68; % room 305 big screen
 %-------------
 
 targetDegree = 8; % degree
-distractorDegree = 6; % degreeÂ£Â¬ azimuth  and  elevation  from  fixation
+distractorDegree = 6; % degree£¬ azimuth  and  elevation  from  fixation
 fixationSizeD = 1.4; % ^2,degree
 targetSizeD = 0.6; % ^2, degree
 distractorSizeD = 1.6; % ^2, degree
@@ -302,6 +302,7 @@ while indexI < length(conditionIndex)+1
         elseif retryFlag
             conditionIndex = [conditionIndex conditionIndex(indexI)];
             conditionIndex(indexI) = [];
+            indexI = indexI-1;
             continue;
         end
         fixDuration(indexI) = fixationTime;
