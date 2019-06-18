@@ -18,6 +18,7 @@ function trajectories_away(subjectNum)
 
 global TRIALINFO
 global SCREEN
+global BOX
 
 % subjects' information 
 fileName = ['trajectories_' num2str(subjectNum) '_' datestr(now,'yymmddHHMM')];
@@ -46,7 +47,7 @@ targetDegree = 8; % degree
 distractorDegree = 6; % degree£¬ azimuth  and  elevation  from  fixation
 fixationSizeD = 1.4; % ^2,degree
 targetSizeD = 0.6; % ^2, degree
-distractorSizeD = 1.6; % ^2, degree
+boxSizeD = 1.6; % ^2, degree
 
 distractorType = 2; % 1(default): cross; 2: square
 
@@ -56,12 +57,14 @@ fixationPeriod = 0.5; % unit s; Its the minimun duration for fixation period. Th
 choicePeriod = 2; % s
 trialInterval = 1; % s
 
-repetition = 12;
+repetition = 15;
 
 colorDistractor = [255 0 0 255];
 colorTarget = [0 255 0 255];
+colorBox = [255 255 255 255];
 
 lineWidth = 6;
+boxWidth = 3;
 
 % trial setting
 TRIALINFO.distractionPosition = [0 1 2]; % 0 for absent, 1 for left, 2 for right
@@ -136,39 +139,60 @@ distractorX = degree2pix(distractorDegree,1); % distance from distractor to scre
 distractorY = degree2pix(distractorDegree,2); % distance from distractor to screen center on Y axis
 fixationSizeP = degree2pix(fixationSizeD); % size of fixation point
 targetSizeP = degree2pix(targetSizeD); % size of target point
-distractorSizeP = degree2pix(distractorSizeD); % size of distractor point
+boxSizeP = degree2pix(boxSizeD); % size of distractor point
 eyeTrackerWinP = degree2pix(eyeTrackerWin); % size of fixation window
 
 % calculate for targets and distractions' location
+%
 %               upTarget
 %   distractor1             distractor2
 %               fixationPoint
 %   distractor3             distractor4
 %               lowerTarget
 %
-% for every distractors:[x1, y1, x2, y2; x3, y3, x4, y4]
-% cross version:
+% for every distractors:[x1, y1, x2, y2; 
+%                           x3, y3, x4, y4]
+%
+% cross version (display when needed):
 %   x1,y1      x3,y3
 %         \   /
 %           x
 %         /   \
 %   x4,y4      x2,y2
 %
-% square version:
+% square version (constant present): 
 % x1,y1 -- x3,y3
 %   |         |
 % x4,y4 -- x2,y2
-distractor1 = [SCREEN.center(1)-distractorX-distractorSizeP, SCREEN.center(2)-distractorY-distractorSizeP, SCREEN.center(1)-distractorX+distractorSizeP, SCREEN.center(2)-distractorY+distractorSizeP;...
-    SCREEN.center(1)-distractorX-distractorSizeP, SCREEN.center(2)-distractorY+distractorSizeP, SCREEN.center(1)-distractorX+distractorSizeP, SCREEN.center(2)-distractorY-distractorSizeP];
-distractor2 = [SCREEN.center(1)+distractorX-distractorSizeP, SCREEN.center(2)-distractorY-distractorSizeP, SCREEN.center(1)+distractorX+distractorSizeP, SCREEN.center(2)-distractorY+distractorSizeP;...
-    SCREEN.center(1)+distractorX-distractorSizeP, SCREEN.center(2)-distractorY+distractorSizeP, SCREEN.center(1)+distractorX+distractorSizeP, SCREEN.center(2)-distractorY-distractorSizeP];
-distractor3 = [SCREEN.center(1)-distractorX-distractorSizeP, SCREEN.center(2)+distractorY-distractorSizeP, SCREEN.center(1)-distractorX+distractorSizeP, SCREEN.center(2)+distractorY+distractorSizeP;...
-    SCREEN.center(1)-distractorX-distractorSizeP, SCREEN.center(2)+distractorY+distractorSizeP, SCREEN.center(1)-distractorX+distractorSizeP, SCREEN.center(2)+distractorY-distractorSizeP];
-distractor4 = [SCREEN.center(1)+distractorX-distractorSizeP, SCREEN.center(2)+distractorY-distractorSizeP, SCREEN.center(1)+distractorX+distractorSizeP, SCREEN.center(2)+distractorY+distractorSizeP;...
-    SCREEN.center(1)+distractorX-distractorSizeP, SCREEN.center(2)+distractorY+distractorSizeP, SCREEN.center(1)+distractorX+distractorSizeP, SCREEN.center(2)+distractorY-distractorSizeP];
 
-upTarget = [SCREEN.center(1)-targetSizeP SCREEN.center(2)-targetDisP-targetSizeP SCREEN.center(1)+targetSizeP SCREEN.center(2)-targetDisP+targetSizeP];
-lowerTarget = [SCREEN.center(1)-targetSizeP SCREEN.center(2)+targetDisP-targetSizeP SCREEN.center(1)+targetSizeP SCREEN.center(2)+targetDisP+targetSizeP];
+BOX.distractorBox{1} = [SCREEN.center(1)-distractorX-boxSizeP, SCREEN.center(2)-distractorY-boxSizeP, SCREEN.center(1)-distractorX+boxSizeP, SCREEN.center(2)-distractorY+boxSizeP;...
+    SCREEN.center(1)-distractorX-boxSizeP, SCREEN.center(2)-distractorY+boxSizeP, SCREEN.center(1)-distractorX+boxSizeP, SCREEN.center(2)-distractorY-boxSizeP];
+BOX.distractorBox{2} = [SCREEN.center(1)+distractorX-boxSizeP, SCREEN.center(2)-distractorY-boxSizeP, SCREEN.center(1)+distractorX+boxSizeP, SCREEN.center(2)-distractorY+boxSizeP;...
+    SCREEN.center(1)+distractorX-boxSizeP, SCREEN.center(2)-distractorY+boxSizeP, SCREEN.center(1)+distractorX+boxSizeP, SCREEN.center(2)-distractorY-boxSizeP];
+BOX.distractorBox{3} = [SCREEN.center(1)-distractorX-boxSizeP, SCREEN.center(2)+distractorY-boxSizeP, SCREEN.center(1)-distractorX+boxSizeP, SCREEN.center(2)+distractorY+boxSizeP;...
+    SCREEN.center(1)-distractorX-boxSizeP, SCREEN.center(2)+distractorY+boxSizeP, SCREEN.center(1)-distractorX+boxSizeP, SCREEN.center(2)+distractorY-boxSizeP];
+BOX.distractorBox{4} = [SCREEN.center(1)+distractorX-boxSizeP, SCREEN.center(2)+distractorY-boxSizeP, SCREEN.center(1)+distractorX+boxSizeP, SCREEN.center(2)+distractorY+boxSizeP;...
+    SCREEN.center(1)+distractorX-boxSizeP, SCREEN.center(2)+distractorY+boxSizeP, SCREEN.center(1)+distractorX+boxSizeP, SCREEN.center(2)+distractorY-boxSizeP];
+
+
+distractor{1} = [SCREEN.center(1)-distractorX-targetSizeP, SCREEN.center(2)-distractorY-targetSizeP, SCREEN.center(1)-distractorX+targetSizeP, SCREEN.center(2)-distractorY+targetSizeP;...
+    SCREEN.center(1)-distractorX-targetSizeP, SCREEN.center(2)-distractorY+targetSizeP, SCREEN.center(1)-distractorX+targetSizeP, SCREEN.center(2)-distractorY-targetSizeP];
+distractor{2} = [SCREEN.center(1)+distractorX-targetSizeP, SCREEN.center(2)-distractorY-targetSizeP, SCREEN.center(1)+distractorX+targetSizeP, SCREEN.center(2)-distractorY+targetSizeP;...
+    SCREEN.center(1)+distractorX-targetSizeP, SCREEN.center(2)-distractorY+targetSizeP, SCREEN.center(1)+distractorX+targetSizeP, SCREEN.center(2)-distractorY-targetSizeP];
+distractor{3} = [SCREEN.center(1)-distractorX-targetSizeP, SCREEN.center(2)+distractorY-targetSizeP, SCREEN.center(1)-distractorX+targetSizeP, SCREEN.center(2)+distractorY+targetSizeP;...
+    SCREEN.center(1)-distractorX-targetSizeP, SCREEN.center(2)+distractorY+targetSizeP, SCREEN.center(1)-distractorX+targetSizeP, SCREEN.center(2)+distractorY-targetSizeP];
+distractor{4} = [SCREEN.center(1)+distractorX-targetSizeP, SCREEN.center(2)+distractorY-targetSizeP, SCREEN.center(1)+distractorX+targetSizeP, SCREEN.center(2)+distractorY+targetSizeP;...
+    SCREEN.center(1)+distractorX-targetSizeP, SCREEN.center(2)+distractorY+targetSizeP, SCREEN.center(1)+distractorX+targetSizeP, SCREEN.center(2)+distractorY-targetSizeP];
+
+distractorC{1} = [SCREEN.center(1)-distractorX,SCREEN.center(2)-distractorY];
+distractorC{2} = [SCREEN.center(1)+distractorX,SCREEN.center(2)-distractorY];
+distractorC{3} = [SCREEN.center(1)-distractorX,SCREEN.center(2)+distractorY];
+distractorC{4} = [SCREEN.center(1)+distractorX,SCREEN.center(2)+distractorY];
+
+BOX.upTarget = [SCREEN.center(1)-targetSizeP, SCREEN.center(2)-targetDisP-targetSizeP, SCREEN.center(1)+targetSizeP, SCREEN.center(2)-targetDisP+targetSizeP;...
+                  SCREEN.center(1)+targetSizeP, SCREEN.center(2)-targetDisP-targetSizeP, SCREEN.center(1)-targetSizeP, SCREEN.center(2)-targetDisP+targetSizeP];
+BOX.lowerTarget = [SCREEN.center(1)-targetSizeP, SCREEN.center(2)+targetDisP-targetSizeP, SCREEN.center(1)+targetSizeP, SCREEN.center(2)+targetDisP+targetSizeP;...
+                     SCREEN.center(1)+targetSizeP, SCREEN.center(2)+targetDisP-targetSizeP, SCREEN.center(1)-targetSizeP, SCREEN.center(2)+targetDisP+targetSizeP];
 
 % initial Eyelink
 if eyelinkRecording
@@ -179,7 +203,7 @@ if eyelinkRecording
     el.backgroundcolour = backgroundColor;
     el.foregroundcolour = BlackIndex(el.window);
     el.msgfontcolour    = BlackIndex(el.window);
-    el.imgtitlecolour   = GrayIndex(el.window);
+    el.imgtitlecolour   = BlackIndex(el.window);
     
     if ~EyelinkInit(dummymode)
         fprintf('Eyelink Init aborted.\n');
@@ -248,6 +272,7 @@ while indexI < length(conditionIndex)+1
     elseif repeatIndex(conditionIndex(indexI),2) == -1 % lower
         Screen('DrawLine', win, [255 255 255],SCREEN.center(1),SCREEN.center(2),SCREEN.center(1),SCREEN.center(2)+fixationSizeP,lineWidth);
     end
+    drawBoxes(win,colorBox,boxWidth);
     Screen('DrawingFinished',win);
     Screen('Flip',win,0,0);
     
@@ -286,9 +311,9 @@ while indexI < length(conditionIndex)+1
                 Screen('CloseAll');
             end
             calibrateCkeck = tic;
+            WaitSecs(0.5); % wait a little bit, in case the key press during calibration influence the following keyboard check
         end
         
-        WaitSecs(0.5); % wait a little bit, in case the key press during calibration influence the following keyboard check
         
         trialStTime(indexI) = toc(blockTime);
         
@@ -317,23 +342,21 @@ while indexI < length(conditionIndex)+1
     % fixation completed. starting present target and distractor
     Screen('DrawLine', win, [255 255 255],SCREEN.center(1),SCREEN.center(2),SCREEN.center(1)-fixationSizeP,SCREEN.center(2),lineWidth);
     Screen('DrawLine', win, [255 255 255],SCREEN.center(1),SCREEN.center(2),SCREEN.center(1)+fixationSizeP,SCREEN.center(2),lineWidth);
+    
     if repeatIndex(conditionIndex(indexI),2) == 1 % up
         Screen('DrawLine', win, [255 255 255],SCREEN.center(1),SCREEN.center(2),SCREEN.center(1),SCREEN.center(2)-fixationSizeP,lineWidth);
-        if repeatIndex(conditionIndex(indexI),1) == 1 % || repeatIndex(conditionIndex(indexI),1) == 3 % left
-            drawDistractor(win,distractor1,colorDistractor,lineWidth,distractorType);
-        elseif repeatIndex(conditionIndex(indexI),1) == 2 % || repeatIndex(conditionIndex(indexI),1) == 4 % right
-            drawDistractor(win,distractor2,colorDistractor,lineWidth,distractorType);
-        end
-        Screen('FillOval', win, colorTarget, upTarget);
+        drawDistractor(win,BOX.upTarget,colorTarget,lineWidth);
     elseif repeatIndex(conditionIndex(indexI),2) == -1 % lower
         Screen('DrawLine', win, [255 255 255],SCREEN.center(1),SCREEN.center(2),SCREEN.center(1),SCREEN.center(2)+fixationSizeP,lineWidth);
-        if repeatIndex(conditionIndex(indexI),1) == 1 % || repeatIndex(conditionIndex(indexI),1) == 3 % left
-            drawDistractor(win,distractor3,colorDistractor,lineWidth,distractorType);
-        elseif repeatIndex(conditionIndex(indexI),1) == 2 % || repeatIndex(conditionIndex(indexI),1) == 4 % right
-            drawDistractor(win,distractor4,colorDistractor,lineWidth,distractorType);
-        end
-        Screen('FillOval', win, colorTarget, lowerTarget);
+        drawDistractor(win,BOX.lowerTarget,colorTarget,lineWidth);
     end
+    
+    distractorNum = repeatIndex(conditionIndex(indexI),1) - repeatIndex(conditionIndex(indexI),2) + 1;
+    if repeatIndex(conditionIndex(indexI),1)~=0
+        drawDistractor(win,distractor{distractorNum},colorDistractor,lineWidth,distractorType);
+    end
+    
+    drawBoxes(win,colorBox,boxWidth);
     Screen('DrawingFinished',win);
     Screen('Flip',win,0,0);
     
@@ -353,11 +376,20 @@ while indexI < length(conditionIndex)+1
                     py = evt.gy(eye_used+1);
                 end
             end
+            if repeatIndex(conditionIndex(indexI),1)~=0
+                if abs([distractorC{distractorNum}(1)-px,distractorC{distractorNum}(2)-py]) < eyeTrackerWinP
+                    choiceFlag = 0;
+                    sound(sin(2*pi*25*(1:4000)/400));
+                    Eyelink('message', ['Trial Break ' num2str(indexI)]);
+                    break
+                end
+            end
             if repeatIndex(conditionIndex(indexI),2) == 1 % if choice up target when up target shown
                 if abs([SCREEN.center(1)-px,SCREEN.center(2)-targetDisP-py]) < eyeTrackerWinP
                     choiceFlag = 1;
                     Eyelink('message', ['Up Target Chosen ' num2str(indexI)]);
                     choiceFinTime(indexI) = toc(choiceSt);
+                    sound(sin(2*pi*25*(1:4000)/100));
                     break
                 end
             elseif repeatIndex(conditionIndex(indexI),2) == -1 % if choice lower target when lower target shown
@@ -365,6 +397,7 @@ while indexI < length(conditionIndex)+1
                     choiceFlag = 1;
                     Eyelink('message', ['Lower Target Chosen ' num2str(indexI)]);
                     choiceFinTime(indexI) = toc(choiceSt);
+                    sound(sin(2*pi*25*(1:4000)/100));
                     break
                 end
             end
@@ -385,6 +418,7 @@ while indexI < length(conditionIndex)+1
     if choiceFlag
         indexI = indexI+1;
     else
+        sound(sin(2*pi*25*(1:4000)/400));
         conditionIndex = [conditionIndex conditionIndex(indexI)];
         conditionIndex(indexI) = [];
     end

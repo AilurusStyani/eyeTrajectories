@@ -12,7 +12,7 @@ if nargin == 1
         length = tand(degree) * SCREEN.distance;
         pixel = length / SCREEN.width * SCREEN.widthPix;
     else
-        error('æ˜¾ç¤ºå™¨è®¾ç½®æœ‰è¯¯ï¼Œæˆ–æ˜¾ç¤ºå™¨å‚æ•°è¾“å…¥æœ‰è¯¯ã€‚')
+        error('ÏÔÊ¾Æ÷ÉèÖÃÓĞÎó£¬»òÏÔÊ¾Æ÷²ÎÊıÊäÈëÓĞÎó¡£')
     end
 elseif nargin == 2
     length = tand(degree) * SCREEN.distance;
