@@ -20,8 +20,15 @@ global TRIALINFO
 global SCREEN
 global BOX
 
+reflexive = 0; % 1 for reflexive task; 1 for voluntary task
+voluntary = 1-reflexive;
 % subjects' information 
-fileName = ['trajectories_' num2str(subjectNum) '_' datestr(now,'yymmddHHMM')];
+if reflexive
+    fileName = ['trajectories_reflexive_' num2str(subjectNum) '_' datestr(now,'yymmddHHMM')];
+else
+    fileName = ['trajectories_voluntary_' num2str(subjectNum) '_' datestr(now,'yymmddHHMM')];
+end
+
 savePath = fullfile(pwd,'data');
 mkdir(savePath);
 curdir = pwd;
@@ -61,13 +68,13 @@ repetition = 15;
 
 colorDistractor = [255 0 0 255];
 colorTarget = [0 255 0 255];
-colorBox = [255 255 255 255];
+colorBox = [0 0 0 0];
 
 lineWidth = 6;
 boxWidth = 3;
 
 % trial setting
-TRIALINFO.distractionPosition = [0 1 2]; % 0 for absent, 1 for left, 2 for right
+TRIALINFO.distractionPosition = [0 1 2 3 4]; % 0 for absent, 1 for left-up, 2 for right-up, 3 for left-lower, 4 for right-lower
 TRIALINFO.targetPosition = [-1 1]; % 1 for up, -1 for down, [1 -1] for half-half
 
 timePredicted = (fixationPeriod+0.5 + choicePeriod + trialInterval) * repetition * length(TRIALINFO.targetPosition) * length(TRIALINFO.distractionPosition);
@@ -82,7 +89,7 @@ rightArror = KbName('RightArrow');
 upArror = KbName('UpArrow');
 cKey = KbName('c'); % to force calibrate
 
-eyelinkRecording = 1; % 0 for test mode, 1 for recording
+eyelinkRecording = 0; % 0 for test mode, 1 for recording
 
 % parameter all set
 % calculate for trials condition
@@ -265,14 +272,19 @@ SetMouse(0,0);
 while indexI < length(conditionIndex)+1
     
     % draw the fixation point whith point out the target position
+    drawBoxes(win,colorBox,boxWidth);
     Screen('DrawLine', win, [255 255 255],SCREEN.center(1),SCREEN.center(2),SCREEN.center(1)-fixationSizeP,SCREEN.center(2),lineWidth);
     Screen('DrawLine', win, [255 255 255],SCREEN.center(1),SCREEN.center(2),SCREEN.center(1)+fixationSizeP,SCREEN.center(2),lineWidth);
-    if repeatIndex(conditionIndex(indexI),2) == 1 % up
+    if reflexive
         Screen('DrawLine', win, [255 255 255],SCREEN.center(1),SCREEN.center(2),SCREEN.center(1),SCREEN.center(2)-fixationSizeP,lineWidth);
-    elseif repeatIndex(conditionIndex(indexI),2) == -1 % lower
         Screen('DrawLine', win, [255 255 255],SCREEN.center(1),SCREEN.center(2),SCREEN.center(1),SCREEN.center(2)+fixationSizeP,lineWidth);
+    elseif voluntary
+        if repeatIndex(conditionIndex(indexI),2) == 1 % up
+            Screen('DrawLine', win, [255 255 255],SCREEN.center(1),SCREEN.center(2),SCREEN.center(1),SCREEN.center(2)-fixationSizeP,lineWidth);
+        elseif repeatIndex(conditionIndex(indexI),2) == -1 % lower
+            Screen('DrawLine', win, [255 255 255],SCREEN.center(1),SCREEN.center(2),SCREEN.center(1),SCREEN.center(2)+fixationSizeP,lineWidth);
+        end
     end
-    drawBoxes(win,colorBox,boxWidth);
     Screen('DrawingFinished',win);
     Screen('Flip',win,0,0);
     
@@ -339,26 +351,36 @@ while indexI < length(conditionIndex)+1
         fixationFinTime(indexI) = toc(blockTime);
     end
     
-    % fixation completed. starting present target and distractor
+    % fixation completed. Display the target and distractor
+    drawBoxes(win,colorBox,boxWidth);
     Screen('DrawLine', win, [255 255 255],SCREEN.center(1),SCREEN.center(2),SCREEN.center(1)-fixationSizeP,SCREEN.center(2),lineWidth);
     Screen('DrawLine', win, [255 255 255],SCREEN.center(1),SCREEN.center(2),SCREEN.center(1)+fixationSizeP,SCREEN.center(2),lineWidth);
     
-    if repeatIndex(conditionIndex(indexI),2) == 1 % up
+    if reflexive
         Screen('DrawLine', win, [255 255 255],SCREEN.center(1),SCREEN.center(2),SCREEN.center(1),SCREEN.center(2)-fixationSizeP,lineWidth);
-        drawDistractor(win,BOX.upTarget,colorTarget,lineWidth);
-    elseif repeatIndex(conditionIndex(indexI),2) == -1 % lower
         Screen('DrawLine', win, [255 255 255],SCREEN.center(1),SCREEN.center(2),SCREEN.center(1),SCREEN.center(2)+fixationSizeP,lineWidth);
-        drawDistractor(win,BOX.lowerTarget,colorTarget,lineWidth);
+        if repeatIndex(conditionIndex(indexI),2) == 1 % up
+            drawDistractor(win,BOX.upTarget,colorTarget,lineWidth);
+        elseif repeatIndex(conditionIndex(indexI),2) == -1 % lower
+            drawDistractor(win,BOX.lowerTarget,colorTarget,lineWidth);
+        end
+    elseif voluntary
+        if repeatIndex(conditionIndex(indexI),2) == 1 % up
+            Screen('DrawLine', win, [255 255 255],SCREEN.center(1),SCREEN.center(2),SCREEN.center(1),SCREEN.center(2)-fixationSizeP,lineWidth);
+        elseif repeatIndex(conditionIndex(indexI),2) == -1 % lower
+            Screen('DrawLine', win, [255 255 255],SCREEN.center(1),SCREEN.center(2),SCREEN.center(1),SCREEN.center(2)+fixationSizeP,lineWidth);
+        end
     end
     
-    distractorNum = repeatIndex(conditionIndex(indexI),1) - repeatIndex(conditionIndex(indexI),2) + 1;
+    distractorNum = repeatIndex(conditionIndex(indexI),1); % - repeatIndex(conditionIndex(indexI),2) + 1;
     if repeatIndex(conditionIndex(indexI),1)~=0
         drawDistractor(win,distractor{distractorNum},colorDistractor,lineWidth,distractorType);
     end
-    
-    drawBoxes(win,colorBox,boxWidth);
+
     Screen('DrawingFinished',win);
     Screen('Flip',win,0,0);
+    
+    sound(sin(2*pi*25*(1:4000)/300)); % give a go signal by sound
     
     choiceSt = tic;
     
@@ -379,7 +401,6 @@ while indexI < length(conditionIndex)+1
             if repeatIndex(conditionIndex(indexI),1)~=0
                 if abs([distractorC{distractorNum}(1)-px,distractorC{distractorNum}(2)-py]) < eyeTrackerWinP
                     choiceFlag = 0;
-                    sound(sin(2*pi*25*(1:4000)/400));
                     Eyelink('message', ['Trial Break ' num2str(indexI)]);
                     break
                 end
@@ -389,7 +410,7 @@ while indexI < length(conditionIndex)+1
                     choiceFlag = 1;
                     Eyelink('message', ['Up Target Chosen ' num2str(indexI)]);
                     choiceFinTime(indexI) = toc(choiceSt);
-                    sound(sin(2*pi*25*(1:4000)/100));
+                    sound(sin(2*pi*25*(1:4000)/200));
                     break
                 end
             elseif repeatIndex(conditionIndex(indexI),2) == -1 % if choice lower target when lower target shown
@@ -397,7 +418,7 @@ while indexI < length(conditionIndex)+1
                     choiceFlag = 1;
                     Eyelink('message', ['Lower Target Chosen ' num2str(indexI)]);
                     choiceFinTime(indexI) = toc(choiceSt);
-                    sound(sin(2*pi*25*(1:4000)/100));
+                    sound(sin(2*pi*25*(1:4000)/200));
                     break
                 end
             end
@@ -418,7 +439,7 @@ while indexI < length(conditionIndex)+1
     if choiceFlag
         indexI = indexI+1;
     else
-        sound(sin(2*pi*25*(1:4000)/400));
+        sound(sin(2*pi*25*(1:4000)/600));
         conditionIndex = [conditionIndex conditionIndex(indexI)];
         conditionIndex(indexI) = [];
     end
@@ -445,9 +466,11 @@ if eyelinkRecording
     save(fullfile(savePath,fileName));
     movefile([savePath,'\',tempName,'.edf'],[savePath,'\',fileName,'.edf']);
 end
-
+upTarget = BOX.upTarget;
+lowerTarget = BOX.lowerTarget;
+fixationPoint = SCREEN.center;
 %% save the real and the choiced heading
-save(fullfile(savePath,fileName),'trialStTime','fixationFinTime','choiceStTime','trialEndTime','trialCondition','choiceFinTime','fixDuration','SCREEN','trialDir');
+save(fullfile(savePath,fileName),'upTarget','lowerTarget','fixationPoint','trialStTime','fixationFinTime','choiceStTime','trialEndTime','trialCondition','choiceFinTime','fixDuration','SCREEN','trialDir','distractor');
 
 %close the eye tracker.
 if eyelinkRecording
