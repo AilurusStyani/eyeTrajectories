@@ -403,14 +403,14 @@ while indexI < length(conditionIndex)+1
                     end
                 end
                 if repeatIndex(conditionIndex(indexI),1)~=0
-                    if abs([distractorC{distractorNum}(1)-px,distractorC{distractorNum}(2)-py]) < eyeTrackerWinP
+                    if abs((distractorC{distractorNum}(1)-px)+(distractorC{distractorNum}(2)-py)*1i) < eyeTrackerWinP
                         choiceFlag = 0;
                         Eyelink('message', ['Trial Break ' num2str(indexI)]);
                         break
                     end
                 end
                 if repeatIndex(conditionIndex(indexI),2) == 1 % if choice up target when up target shown
-                    if abs([SCREEN.center(1)-px,SCREEN.center(2)-targetDisP-py]) < eyeTrackerWinP
+                    if abs((SCREEN.center(1)-px)+(SCREEN.center(2)-targetDisP-py)*1i) < eyeTrackerWinP
                         choiceFlag = 1;
                         Eyelink('message', ['Up Target Chosen ' num2str(indexI)]);
                         choiceFinTime(indexI) = toc(choiceSt);
@@ -418,7 +418,7 @@ while indexI < length(conditionIndex)+1
                         break
                     end
                 elseif repeatIndex(conditionIndex(indexI),2) == -1 % if choice lower target when lower target shown
-                    if abs([SCREEN.center(1)-px,SCREEN.center(2)+targetDisP-py]) < eyeTrackerWinP
+                    if abs((SCREEN.center(1)-px)+(SCREEN.center(2)+targetDisP-py)*1i) < eyeTrackerWinP
                         choiceFlag = 1;
                         Eyelink('message', ['Lower Target Chosen ' num2str(indexI)]);
                         choiceFinTime(indexI) = toc(choiceSt);
