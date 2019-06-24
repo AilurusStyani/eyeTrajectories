@@ -1,5 +1,5 @@
-function [escFlag,retryFlag] = fixationCheck(eyeTrackerWinP,fixationPeriod,eye_used,escape,skipKey,cKey,el)
-global SCREEN
+function [escFlag,retryFlag] = fixationCheck(fixationPoint,eyeTrackerWinP,fixationPeriod,eye_used,escape,skipKey,cKey,el)
+
 escFlag = 0;
 retryFlag = 0;
 while 1
@@ -43,7 +43,7 @@ while 1
             end
 %         end
         
-        if abs([SCREEN.center(1)-px,SCREEN.center(2)-py]) > eyeTrackerWinP
+        if abs((fixationPoint(1)-px)+(fixationPoint(2)-py)*1i) > eyeTrackerWinP
             break
         elseif toc(fixationStart) >= fixationPeriod
             return
