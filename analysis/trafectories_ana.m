@@ -1,11 +1,11 @@
 function trafectories_ana()
-path = '';
+path = 'D:\ION\XinHua\EyeMovementTrajectories\data';
 close all
 warning off
 
 resultDir = fullfile(pwd,'data');
 
-exeFilePath = '';
+exeFilePath = 'D:\ION\XinHua\EyeMovementTrajectories\analysis';
 dataFilePath = path;
 fileSaveName = 'result_';
 
@@ -15,7 +15,7 @@ smooth_Hz = 60;
 
 % set for convert process
 edf2asc = 0; % 1:convert data from EDF files to asc files; 0: skip this process;
-dataConvert = 0; % 1:convert data to mat files; 0: skip this process;
+dataConvert = 1; % 1:convert data to mat files; 0: skip this process;
 
 
 if edf2asc
@@ -46,32 +46,40 @@ for i = 1:length(edfFile)
     set(gca,'YDir','reverse');
     hold on
     axis equal
-    plot([CONFIG.distractor{1}(1,1),CONFIG.distractor{1}(1,3)],[CONFIG.distractor{1}(1,2),CONFIG.distractor{1}(1,4)],'-k');
-    plot([CONFIG.distractor{1}(2,1),CONFIG.distractor{1}(2,3)],[CONFIG.distractor{1}(2,2),CONFIG.distractor{1}(2,4)],'-k');
+    if isfield(CONFIG,'distractor')
+        plot([CONFIG.distractor{1}(1,1),CONFIG.distractor{1}(1,3)],[CONFIG.distractor{1}(1,2),CONFIG.distractor{1}(1,4)],'-k');
+        plot([CONFIG.distractor{1}(2,1),CONFIG.distractor{1}(2,3)],[CONFIG.distractor{1}(2,2),CONFIG.distractor{1}(2,4)],'-k');
+    end
     title(subplot1{i}(1),'Up-Left(1)');
     
     axes(subplot1{i}(2));
     set(gca,'YDir','reverse');
     hold on
     axis equal
-    plot([CONFIG.distractor{2}(1,1),CONFIG.distractor{2}(1,3)],[CONFIG.distractor{2}(1,2),CONFIG.distractor{2}(1,4)],'-k');
-    plot([CONFIG.distractor{2}(2,1),CONFIG.distractor{2}(2,3)],[CONFIG.distractor{2}(2,2),CONFIG.distractor{2}(2,4)],'-k');
+    if isfield(CONFIG,'distractor')
+        plot([CONFIG.distractor{2}(1,1),CONFIG.distractor{2}(1,3)],[CONFIG.distractor{2}(1,2),CONFIG.distractor{2}(1,4)],'-k');
+        plot([CONFIG.distractor{2}(2,1),CONFIG.distractor{2}(2,3)],[CONFIG.distractor{2}(2,2),CONFIG.distractor{2}(2,4)],'-k');
+    end
     title(subplot1{i}(2),'Up-Reft(2)');
     
     axes(subplot1{i}(3));
     set(gca,'YDir','reverse');
     hold on
     axis equal
-    plot([CONFIG.distractor{3}(1,1),CONFIG.distractor{3}(1,3)],[CONFIG.distractor{3}(1,2),CONFIG.distractor{3}(1,4)],'-k');
-    plot([CONFIG.distractor{3}(2,1),CONFIG.distractor{3}(2,3)],[CONFIG.distractor{3}(2,2),CONFIG.distractor{3}(2,4)],'-k');
+    if isfield(CONFIG,'distractor')
+        plot([CONFIG.distractor{3}(1,1),CONFIG.distractor{3}(1,3)],[CONFIG.distractor{3}(1,2),CONFIG.distractor{3}(1,4)],'-k');
+        plot([CONFIG.distractor{3}(2,1),CONFIG.distractor{3}(2,3)],[CONFIG.distractor{3}(2,2),CONFIG.distractor{3}(2,4)],'-k');
+    end
     title(subplot1{i}(3),'Up-Left(3)');
     
     axes(subplot1{i}(4));
     set(gca,'YDir','reverse');
     hold on
     axis equal
-    plot([CONFIG.distractor{4}(1,1),CONFIG.distractor{4}(1,3)],[CONFIG.distractor{4}(1,2),CONFIG.distractor{4}(1,4)],'-k');
-    plot([CONFIG.distractor{4}(2,1),CONFIG.distractor{4}(2,3)],[CONFIG.distractor{4}(2,2),CONFIG.distractor{4}(2,4)],'-k');
+    if isfield(CONFIG,'distractor')
+        plot([CONFIG.distractor{4}(1,1),CONFIG.distractor{4}(1,3)],[CONFIG.distractor{4}(1,2),CONFIG.distractor{4}(1,4)],'-k');
+        plot([CONFIG.distractor{4}(2,1),CONFIG.distractor{4}(2,3)],[CONFIG.distractor{4}(2,2),CONFIG.distractor{4}(2,4)],'-k');
+    end
     title(subplot1{i}(4),'Up-Right(4)');
     
     axes(subplot1{i}(5));
@@ -84,32 +92,40 @@ for i = 1:length(edfFile)
     set(gca,'YDir','reverse');
     hold on
     axis equal
-    plot([CONFIG.distractor{1}(1,1),CONFIG.distractor{1}(1,3)],[CONFIG.distractor{1}(1,2),CONFIG.distractor{1}(1,4)],'-k');
-    plot([CONFIG.distractor{1}(2,1),CONFIG.distractor{1}(2,3)],[CONFIG.distractor{1}(2,2),CONFIG.distractor{1}(2,4)],'-k');
+    if isfield(CONFIG,'distractor')
+        plot([CONFIG.distractor{1}(1,1),CONFIG.distractor{1}(1,3)],[CONFIG.distractor{1}(1,2),CONFIG.distractor{1}(1,4)],'-k');
+        plot([CONFIG.distractor{1}(2,1),CONFIG.distractor{1}(2,3)],[CONFIG.distractor{1}(2,2),CONFIG.distractor{1}(2,4)],'-k');
+    end
     title(subplot1{i}(6),'Lower-Left(1)');
     
     axes(subplot1{i}(7));
     set(gca,'YDir','reverse');
     hold on
     axis equal
-    plot([CONFIG.distractor{2}(1,1),CONFIG.distractor{2}(1,3)],[CONFIG.distractor{2}(1,2),CONFIG.distractor{2}(1,4)],'-k');
-    plot([CONFIG.distractor{2}(2,1),CONFIG.distractor{2}(2,3)],[CONFIG.distractor{2}(2,2),CONFIG.distractor{2}(2,4)],'-k');
+    if isfield(CONFIG,'distractor')
+        plot([CONFIG.distractor{2}(1,1),CONFIG.distractor{2}(1,3)],[CONFIG.distractor{2}(1,2),CONFIG.distractor{2}(1,4)],'-k');
+        plot([CONFIG.distractor{2}(2,1),CONFIG.distractor{2}(2,3)],[CONFIG.distractor{2}(2,2),CONFIG.distractor{2}(2,4)],'-k');
+    end
     title(subplot1{i}(7),'Lower-Right(2)');
     
     axes(subplot1{i}(8));
     set(gca,'YDir','reverse');
     hold on
     axis equal
-    plot([CONFIG.distractor{3}(1,1),CONFIG.distractor{3}(1,3)],[CONFIG.distractor{3}(1,2),CONFIG.distractor{3}(1,4)],'-k');
-    plot([CONFIG.distractor{3}(2,1),CONFIG.distractor{3}(2,3)],[CONFIG.distractor{3}(2,2),CONFIG.distractor{3}(2,4)],'-k');
+    if isfield(CONFIG,'distractor')
+        plot([CONFIG.distractor{3}(1,1),CONFIG.distractor{3}(1,3)],[CONFIG.distractor{3}(1,2),CONFIG.distractor{3}(1,4)],'-k');
+        plot([CONFIG.distractor{3}(2,1),CONFIG.distractor{3}(2,3)],[CONFIG.distractor{3}(2,2),CONFIG.distractor{3}(2,4)],'-k');
+    end
     title(subplot1{i}(8),'Lower-Left(3)');
     
     axes(subplot1{i}(9));
     set(gca,'YDir','reverse');
     hold on
     axis equal
-    plot([CONFIG.distractor{4}(1,1),CONFIG.distractor{4}(1,3)],[CONFIG.distractor{4}(1,2),CONFIG.distractor{4}(1,4)],'-k');
-    plot([CONFIG.distractor{4}(2,1),CONFIG.distractor{4}(2,3)],[CONFIG.distractor{4}(2,2),CONFIG.distractor{4}(2,4)],'-k');
+    if isfield(CONFIG,'distractor')
+        plot([CONFIG.distractor{4}(1,1),CONFIG.distractor{4}(1,3)],[CONFIG.distractor{4}(1,2),CONFIG.distractor{4}(1,4)],'-k');
+        plot([CONFIG.distractor{4}(2,1),CONFIG.distractor{4}(2,3)],[CONFIG.distractor{4}(2,2),CONFIG.distractor{4}(2,4)],'-k');
+    end
     title(subplot1{i}(9),'Lower-Right(4)');
     
     axes(subplot1{i}(10));
@@ -127,8 +143,9 @@ for i = 1:length(edfFile)
     contrialTrial = find(CONFIG.trialDir(:,2) == 0);
     
     for j = 1:length(CONFIG.trialCondition)
-        % get SCREEN parameter from the data file
-        %%TODO
+        if isempty(DATA.eyePath{j})
+            continue
+        end
         
         if ismember(j,upTrial)
             if ismember(j,dis1)

@@ -7,9 +7,14 @@ if isempty(fileName)
     error('There is no .asc file in this path.')
 end
 
+saccadeVThres = 22; % degree/s
+saccadeAThres = 4000; % degree/s^2
+        
 for i = 1:length(fileName)
     fileNameI = fileName(i).name;
-    saveName = ['converted_' strrep(fileNameI,'.asc','.mat')];
+    dataFile = strrep(fileNameI,'.asc','.mat');
+    saveName = ['converted_' dataFile];
+    CONFIG = load(dataFile);
     
     % extract the time on file names as the error marker
     num = regexp(fileNameI,'(\d+)','tokens');
@@ -142,13 +147,25 @@ for i = 1:length(fileName)
     trialI = targetChosen(:,2)';
     
     for j = trialI(~isnan(trialI))
-        eyeMoveSt = find(tempData(:,1) >= fixationComplete(fixationComplete(:,2) == j,1),1);
-        eyeMoveEnd = find(tempData(:,1) <= targetChosen(targetChosen(:,2) == j,1),1,'last');
-        eyePath{j} = tempData(eyeMoveSt:eyeMoveEnd,:);
-        
         trialSt = find(tempData(:,1) >= trialStart(trialStart(:,2) == j,1),1);
         trialEnd = find(tempData(:,1) <= trialFinish(trialFinish(:,2) == j,1),1,'last');
         trialEyeData{j} = tempData(trialSt:trialEnd,:);
+        
+        eyeMoveSt = find(tempData(:,1) >= fixationComplete(fixationComplete(:,2) == j,1),1);
+        eyeMoveEnd = find(tempData(:,1) <= targetChosen(targetChosen(:,2) == j,1),1,'last');
+        pathData = tempData(eyeMoveSt:eyeMoveEnd,:);
+        % eliminating blinks
+        [purifiedPathData,~,errorflag,~] = BlinkNoisePurify_NaN(pathData,dt,errorSet,4);
+        %detecting saccade
+        SCREEN = CONFIG.SCREEN;
+        if ismember(0,errorflag)
+            [saccadePair,~,~] = findSaccade(purifiedPathData,saccadeVThres,saccadeAThres,SCREEN);
+            if size(saccadePair,1)==1
+                eyePath{j} = purifiedPathData(saccadePair(1):saccadePair(2),:);
+            end
+        else
+            eyePath{j} = [];
+        end
     end
     %% todo try cell
     save(saveName,'trialEyeData','eyePath','trialStart');
